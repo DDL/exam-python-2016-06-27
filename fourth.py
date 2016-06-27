@@ -42,6 +42,62 @@
 
 # The following code should work with the classes
 
+class Rocket(object):
+    def __init__(self, type_of_rocket= '', starting_fuel_level= 0, number_of_lunches = 0):
+        self.type_of_rocket = type_of_rocket
+        self.fuel_level = starting_fuel_level
+        self.launch_num = number_of_lunches
+        self.setRockets()
+
+    def setRockets(self):
+        if self.type_of_rocket == 'falcon1':
+            self.fuel_use = 1
+            self.fuel_limit = 5
+        if self.type_of_rocket == 'falcon9':
+            self.fuel_use = 9
+            self.fuel_limit = 20
+
+    def launch(self):
+        self.fuel_level -= self.fuel_use
+        self.launch_num += 1
+
+    def refill(self):
+        self.used_fuel = self.fuel_limit - self.fuel_level
+        self.fuel_level = self.fuel_limit
+        return self.used_fuel
+
+    def getStats(self):
+        return ('Name: %s , Fuel: %s' % (str(self.type_of_rocket), str(self.fuel_level)))
+
+
+class SpaceX(object):
+    def __init__(self, fuel_storage):
+        self.fuel_storage = fuel_storage
+        self.rockets = []
+
+    def addRocket(self,rocket):
+        self.rockets.append(rocket)
+#
+    def refill_all(self):
+        for rocket in self.rockets:
+            self.fuel_storage -= rocket.refill()
+#
+    def launch_all(self):
+        for rocket in self.rockets:
+            rocket.launch()
+        self.launches += 1
+
+    def buy_fuel(self, amount):
+        self.fuel_storage += amount
+
+    def getStats(self):
+        self.launches = 0
+        for rocket in self.rockets:
+            self.launches += rocket.launch_num
+        return ('Rockets: ' + str(len(self.rockets)) + ', Fuel: ' + str(self.fuel_storage) + ', Launches: ' + str(self.launches))
+
+# The following code should work with the classes
+
 
 space_x = SpaceX(100)
 falcon1 = Rocket('falcon1', 0, 0)
@@ -49,7 +105,7 @@ falcon9 = Rocket('falcon9', 0, 0)
 returned_falcon9 = Rocket('falcon9', 11, 1)
 
 print(returned_falcon9.getStats()) # name: falcon9, fuel: 11
-
+#
 space_x.addRocket(falcon1)
 space_x.addRocket(falcon9)
 space_x.addRocket(returned_falcon9)
